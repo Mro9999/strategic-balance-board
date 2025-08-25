@@ -3,596 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>汎用版戦略バランスボード（高精度版）- 個人事業主・中小企業向け経営戦略最適化ツール</title>
+    <title>汎用版戦略バランスボード - 個人事業主・中小企業向け経営分析ツール</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
-        
         body {
-            font-family: 'Noto Sans JP', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
         }
-        
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
+        .gradient-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        
+        .slider-container {
+            position: relative;
+        }
         .slider {
             -webkit-appearance: none;
-            appearance: none;
-            height: 8px;
+            width: 100%;
+            height: 4px;
             border-radius: 5px;
-            background: #d3d3d3;
+            background: #ddd;
             outline: none;
-            opacity: 0.7;
-            transition: opacity 0.2s;
         }
-        
-        .slider:hover {
-            opacity: 1;
-        }
-        
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #4CAF50;
+            background: #667eea;
             cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        
         .slider::-moz-range-thumb {
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #4CAF50;
+            background: #667eea;
             cursor: pointer;
             border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        
-        .metric-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .metric-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        
         .chart-container {
             position: relative;
-            height: 400px;
-            width: 100%;
+            height: 350px;
         }
-        
-        .strategy-section {
-            margin-bottom: 2rem;
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
         }
-        
-        .correlation-line {
-            stroke: #fbbf24;
-            stroke-width: 2;
-            fill: none;
-            stroke-dasharray: 5,5;
+        .metric-card:hover {
+            transform: translateY(-2px);
         }
-        
-        .pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        .result-display {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+            color: #2d3436;
         }
-        
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: .5;
-            }
+        .scenario-btn {
+            transition: all 0.3s ease;
+        }
+        .scenario-btn:hover {
+            transform: scale(1.02);
+        }
+        .scenario-growth {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+        }
+        .scenario-optimization {
+            background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
         }
     </style>
 </head>
-<body class="p-4">
-    <div class="max-w-7xl mx-auto">
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4 max-w-6xl">
         <!-- ヘッダー -->
-        <div class="glass-effect p-6 mb-6">
-            <div class="text-center">
-                <h1 class="text-4xl font-bold text-white mb-2">汎用版戦略バランスボード（高精度版）</h1>
-                <p class="text-xl text-blue-100 mb-4">個人事業主・中小企業向け経営戦略最適化ツール</p>
-                <div class="flex items-center justify-center space-x-4 text-sm text-blue-200">
-                    <span><i class="fas fa-chart-line mr-2"></i>価格競争脱却</span>
-                    <span><i class="fas fa-bullseye mr-2"></i>ニッチ市場特化</span>
-                    <span><i class="fas fa-crown mr-2"></i>ブランド力強化</span>
+        <header class="gradient-header text-white p-6 rounded-lg mb-6">
+            <div class="flex items-center">
+                <i class="fas fa-chart-line text-3xl mr-4"></i>
+                <div>
+                    <h1 class="text-3xl font-bold">汎用版戦略バランスボード</h1>
+                    <p class="text-lg opacity-90">個人事業主・中小企業向け経営分析ツール</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- メイン測定パネル -->
+        <div class="metric-card p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-sliders-h text-blue-600 mr-2"></i>
+                主要経営測定パネル
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 売上関連 -->
+                <div class="slider-container">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">月間売上</label>
+                    <input type="range" id="monthlyRevenue" class="slider" min="10" max="1000" value="100">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>10万円</span>
+                        <span id="revenueValue">100万円</span>
+                        <span>1000万円</span>
+                    </div>
+                </div>
+
+                <div class="slider-container">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">顧客数</label>
+                    <input type="range" id="customerCount" class="slider" min="10" max="1000" value="50">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>10人</span>
+                        <span id="customerValue">50人</span>
+                        <span>1000人</span>
+                    </div>
+                </div>
+
+                <div class="slider-container">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">新規顧客獲得費用</label>
+                    <input type="range" id="acquisitionCost" class="slider" min="1000" max="50000" value="5000">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>1千円</span>
+                        <span id="acquisitionValue">5千円</span>
+                        <span>5万円</span>
+                    </div>
+                </div>
+
+                <div class="slider-container">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">顧客からの総収益</label>
+                    <input type="range" id="customerLifetime" class="slider" min="10000" max="500000" value="50000">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>1万円</span>
+                        <span id="lifetimeValue">5万円</span>
+                        <span>50万円</span>
+                    </div>
+                </div>
+
+                <div class="slider-container">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ブランド認知度</label>
+                    <input type="range" id="brandAwareness" class="slider" min="5" max="95" value="25">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>5%</span>
+                        <span id="brandValue">25%</span>
+                        <span>95%</span>
+                    </div>
+                </div>
+
+                <div class="slider-container">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">従業員満足度</label>
+                    <input type="range" id="employeeSatisfaction" class="slider" min="30" max="95" value="65">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>30%</span>
+                        <span id="satisfactionValue">65%</span>
+                        <span>95%</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- メイン戦略バランスボード -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <!-- 左側: パラメーター調整 -->
-            <div class="glass-effect p-6">
-                <h2 class="text-2xl font-bold text-white mb-6 text-center">
-                    <i class="fas fa-sliders-h mr-2"></i>経営パラメーター
-                </h2>
-
-                <!-- 売上効率 -->
-                <div class="strategy-section">
-                    <h3 class="text-lg font-semibold text-blue-100 mb-4">
-                        <i class="fas fa-chart-line mr-2"></i>売上効率
-                    </h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-sm text-white mb-2">月間顧客数: <span id="customerCount">200</span>人</label>
-                            <input type="range" min="50" max="1000" value="200" class="slider w-full" id="customerCountSlider" style="background: linear-gradient(to right, #3b82f6, #1d4ed8);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">平均客単価: <span id="avgOrderValue">8000</span>円</label>
-                            <input type="range" min="1000" max="50000" value="8000" class="slider w-full" id="avgOrderValueSlider" style="background: linear-gradient(to right, #10b981, #059669);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">顧客生涯価値倍率: <span id="ltvMultiplier">3.2</span>倍</label>
-                            <input type="range" min="1.5" max="10" value="3.2" step="0.1" class="slider w-full" id="ltvMultiplierSlider" style="background: linear-gradient(to right, #f59e0b, #d97706);">
-                        </div>
+        <!-- 測定結果 -->
+        <div class="metric-card p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-calculator text-green-600 mr-2"></i>
+                経営健全度測定結果
+            </h2>
+            <button onclick="calculateResults()" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all">
+                <i class="fas fa-play mr-2"></i>
+                結果を計算
+            </button>
+            <div id="resultDisplay" class="result-display mt-4" style="display: none;">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div>
+                        <div class="font-bold">売上効率</div>
+                        <div id="salesEfficiency">-</div>
                     </div>
-                </div>
-
-                <!-- 収益性 -->
-                <div class="strategy-section">
-                    <h3 class="text-lg font-semibold text-blue-100 mb-4">
-                        <i class="fas fa-coins mr-2"></i>収益性
-                    </h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-sm text-white mb-2">売上総利益率: <span id="grossMargin">45</span>%</label>
-                            <input type="range" min="10" max="80" value="45" class="slider w-full" id="grossMarginSlider" style="background: linear-gradient(to right, #8b5cf6, #7c3aed);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">顧客獲得コスト: <span id="cac">3000</span>円</label>
-                            <input type="range" min="500" max="20000" value="3000" class="slider w-full" id="cacSlider" style="background: linear-gradient(to right, #ef4444, #dc2626);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">固定費効率: <span id="fixedCostEfficiency">65</span>%</label>
-                            <input type="range" min="30" max="90" value="65" class="slider w-full" id="fixedCostEfficiencySlider" style="background: linear-gradient(to right, #06b6d4, #0891b2);">
-                        </div>
+                    <div>
+                        <div class="font-bold">投資効果</div>
+                        <div id="investmentReturn">-</div>
                     </div>
-                </div>
-
-                <!-- ブランド力 -->
-                <div class="strategy-section">
-                    <h3 class="text-lg font-semibold text-blue-100 mb-4">
-                        <i class="fas fa-crown mr-2"></i>ブランド力
-                    </h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-sm text-white mb-2">ブランド認知度: <span id="brandAwareness">35</span>%</label>
-                            <input type="range" min="5" max="80" value="35" class="slider w-full" id="brandAwarenessSlider" style="background: linear-gradient(to right, #f97316, #ea580c);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">差別化度: <span id="differentiation">60</span>%</label>
-                            <input type="range" min="20" max="95" value="60" class="slider w-full" id="differentiationSlider" style="background: linear-gradient(to right, #84cc16, #65a30d);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">顧客ロイヤリティ: <span id="customerLoyalty">55</span>%</label>
-                            <input type="range" min="20" max="90" value="55" class="slider w-full" id="customerLoyaltySlider" style="background: linear-gradient(to right, #ec4899, #db2777);">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 運営効率 -->
-                <div class="strategy-section">
-                    <h3 class="text-lg font-semibold text-blue-100 mb-4">
-                        <i class="fas fa-cogs mr-2"></i>運営効率
-                    </h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-sm text-white mb-2">業務生産性: <span id="productivity">70</span>%</label>
-                            <input type="range" min="40" max="95" value="70" class="slider w-full" id="productivitySlider" style="background: linear-gradient(to right, #6366f1, #4f46e5);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">コスト管理効率: <span id="costManagement">60</span>%</label>
-                            <input type="range" min="30" max="90" value="60" class="slider w-full" id="costManagementSlider" style="background: linear-gradient(to right, #14b8a6, #0d9488);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">デジタル化度: <span id="digitalization">50</span>%</label>
-                            <input type="range" min="20" max="90" value="50" class="slider w-full" id="digitalizationSlider" style="background: linear-gradient(to right, #a855f7, #9333ea);">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 成長性 -->
-                <div class="strategy-section">
-                    <h3 class="text-lg font-semibold text-blue-100 mb-4">
-                        <i class="fas fa-rocket mr-2"></i>成長性
-                    </h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-sm text-white mb-2">市場拡大力: <span id="marketExpansion">40</span>%</label>
-                            <input type="range" min="10" max="80" value="40" class="slider w-full" id="marketExpansionSlider" style="background: linear-gradient(to right, #f59e0b, #d97706);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">新規開拓力: <span id="newCustomerAcquisition">45</span>%</label>
-                            <input type="range" min="20" max="85" value="45" class="slider w-full" id="newCustomerAcquisitionSlider" style="background: linear-gradient(to right, #3b82f6, #2563eb);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">イノベーション度: <span id="innovation">35</span>%</label>
-                            <input type="range" min="15" max="80" value="35" class="slider w-full" id="innovationSlider" style="background: linear-gradient(to right, #10b981, #059669);">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 持続性 -->
-                <div class="strategy-section">
-                    <h3 class="text-lg font-semibold text-blue-100 mb-4">
-                        <i class="fas fa-shield-alt mr-2"></i>持続性
-                    </h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-sm text-white mb-2">キャッシュフロー健全性: <span id="cashflowHealth">65</span>%</label>
-                            <input type="range" min="30" max="95" value="65" class="slider w-full" id="cashflowHealthSlider" style="background: linear-gradient(to right, #059669, #047857);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">財務安全性: <span id="financialSafety">60</span>%</label>
-                            <input type="range" min="25" max="90" value="60" class="slider w-full" id="financialSafetySlider" style="background: linear-gradient(to right, #dc2626, #b91c1c);">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-white mb-2">競争優位性: <span id="competitiveAdvantage">55</span>%</label>
-                            <input type="range" min="20" max="90" value="55" class="slider w-full" id="competitiveAdvantageSlider" style="background: linear-gradient(to right, #7c3aed, #6d28d9);">
-                        </div>
+                    <div>
+                        <div class="font-bold">総合健全度</div>
+                        <div id="overallHealth">-</div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- 右側: 戦略バランスレーダーチャート -->
-            <div class="glass-effect p-6">
-                <h2 class="text-2xl font-bold text-white mb-6 text-center">
-                    <i class="fas fa-chart-radar mr-2"></i>戦略バランス分析
+        <!-- シナリオ管理 -->
+        <div class="metric-card p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-road text-purple-600 mr-2"></i>
+                シナリオ管理
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="applyGrowthScenario()" class="scenario-btn scenario-growth text-white py-4 px-6 rounded-lg font-semibold flex items-center justify-center">
+                    <i class="fas fa-arrow-up mr-2"></i>
+                    成長重視シナリオ適用
+                </button>
+                <button onclick="applyOptimizationScenario()" class="scenario-btn scenario-optimization text-white py-4 px-6 rounded-lg font-semibold flex items-center justify-center">
+                    <i class="fas fa-cog mr-2"></i>
+                    効率最適化シナリオ適用
+                </button>
+            </div>
+        </div>
+
+        <!-- グラフエリア -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- レーダーチャート -->
+            <div class="metric-card p-6">
+                <h2 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-spider text-indigo-600 mr-2"></i>
+                    経営バランスマップ
                 </h2>
                 <div class="chart-container">
-                    <canvas id="strategyRadarChart"></canvas>
+                    <canvas id="radarChart"></canvas>
                 </div>
             </div>
-        </div>
 
-        <!-- KPI指標ダッシュボード -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="metric-card p-4 text-center">
-                <i class="fas fa-yen-sign text-3xl text-green-400 mb-2"></i>
-                <h3 class="text-sm text-blue-100 mb-1">月間売上</h3>
-                <p class="text-2xl font-bold text-white" id="monthlyRevenue">¥1,600,000</p>
-                <p class="text-xs text-green-400" id="revenueGrowth">+12.5%</p>
-            </div>
-            <div class="metric-card p-4 text-center">
-                <i class="fas fa-percentage text-3xl text-blue-400 mb-2"></i>
-                <h3 class="text-sm text-blue-100 mb-1">営業利益率</h3>
-                <p class="text-2xl font-bold text-white" id="operatingMargin">18.2%</p>
-                <p class="text-xs text-blue-400" id="marginTrend">健全</p>
-            </div>
-            <div class="metric-card p-4 text-center">
-                <i class="fas fa-heart text-3xl text-pink-400 mb-2"></i>
-                <h3 class="text-sm text-blue-100 mb-1">顧客満足度</h3>
-                <p class="text-2xl font-bold text-white" id="customerSatisfaction">4.2/5.0</p>
-                <p class="text-xs text-pink-400" id="satisfactionTrend">良好</p>
-            </div>
-            <div class="metric-card p-4 text-center">
-                <i class="fas fa-trophy text-3xl text-yellow-400 mb-2"></i>
-                <h3 class="text-sm text-blue-100 mb-1">総合スコア</h3>
-                <p class="text-2xl font-bold text-white" id="overallScore">72/100</p>
-                <p class="text-xs text-yellow-400" id="scoreLevel">良好</p>
-            </div>
-        </div>
-
-        <!-- 相関関係と改善提案 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <!-- 相関関係マップ -->
-            <div class="glass-effect p-6">
-                <h2 class="text-2xl font-bold text-white mb-6 text-center">
-                    <i class="fas fa-project-diagram mr-2"></i>戦略相関マップ
+            <!-- 棒グラフ -->
+            <div class="metric-card p-6">
+                <h2 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-chart-bar text-green-600 mr-2"></i>
+                    重要指標分析
                 </h2>
                 <div class="chart-container">
-                    <canvas id="correlationChart"></canvas>
-                </div>
-            </div>
-
-            <!-- 改善提案 -->
-            <div class="glass-effect p-6">
-                <h2 class="text-2xl font-bold text-white mb-6 text-center">
-                    <i class="fas fa-lightbulb mr-2"></i>戦略改善提案
-                </h2>
-                <div id="improvementSuggestions" class="space-y-4">
-                    <!-- 動的に生成される改善提案 -->
+                    <canvas id="barChart"></canvas>
                 </div>
             </div>
         </div>
 
         <!-- フッター -->
-        <div class="glass-effect p-6 text-center">
-            <div class="text-white">
-                <p class="font-semibold mb-2">Developed by DEARS CONSULTING / 前田正浩</p>
-                <p class="text-sm text-blue-200">© 2025 DEARS CONSULTING. All Rights Reserved.</p>
-                <div class="mt-4 text-xs text-blue-300">
-                    <p>個人事業主〜中小企業向け高精度経営戦略ツール | リアルタイム戦略最適化 | 年商数百万〜数億円対応</p>
-                </div>
-            </div>
-        </div>
+        <footer class="text-center text-gray-600 mt-8 p-4">
+            <p>&copy; 2025 DEARS CONSULTING. All Rights Reserved.</p>
+            <p class="text-sm mt-2">個人事業主・中小企業向け戦略バランスボード</p>
+        </footer>
     </div>
 
     <script>
-        // グローバル変数
-        let strategyRadarChart;
-        let correlationChart;
+        let radarChart;
+        let barChart;
 
-        // データオブジェクト
-        const businessData = {
-            customerCount: 200,
-            avgOrderValue: 8000,
-            ltvMultiplier: 3.2,
-            grossMargin: 45,
-            cac: 3000,
-            fixedCostEfficiency: 65,
-            brandAwareness: 35,
-            differentiation: 60,
-            customerLoyalty: 55,
-            productivity: 70,
-            costManagement: 60,
-            digitalization: 50,
-            marketExpansion: 40,
-            newCustomerAcquisition: 45,
-            innovation: 35,
-            cashflowHealth: 65,
-            financialSafety: 60,
-            competitiveAdvantage: 55
-        };
-
-        // 計算関数
-        function calculateMetrics() {
-            // 売上効率スコア
-            const salesEfficiency = Math.min(100, (businessData.customerCount / 10) + 
-                (businessData.avgOrderValue / 500) + 
-                (businessData.ltvMultiplier * 10));
-
-            // 収益性スコア
-            const profitability = Math.min(100, businessData.grossMargin + 
-                Math.max(0, 30 - (businessData.cac / 100)) + 
-                (businessData.fixedCostEfficiency * 0.5));
-
-            // ブランド力スコア
-            const brandPower = Math.min(100, (businessData.brandAwareness + 
-                businessData.differentiation + 
-                businessData.customerLoyalty) / 3);
-
-            // 運営効率スコア
-            const operationalEfficiency = Math.min(100, (businessData.productivity + 
-                businessData.costManagement + 
-                businessData.digitalization) / 3);
-
-            // 成長性スコア
-            const growthPotential = Math.min(100, (businessData.marketExpansion + 
-                businessData.newCustomerAcquisition + 
-                businessData.innovation) / 3);
-
-            // 持続性スコア
-            const sustainability = Math.min(100, (businessData.cashflowHealth + 
-                businessData.financialSafety + 
-                businessData.competitiveAdvantage) / 3);
-
-            // 月間売上計算
-            const monthlyRevenue = businessData.customerCount * businessData.avgOrderValue;
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            updateAllValues();
             
-            // 営業利益率計算（相関関係考慮）
-            const operatingMargin = Math.max(5, Math.min(40, 
-                (businessData.grossMargin * 0.6) + 
-                (brandPower * 0.2) + 
-                (operationalEfficiency * 0.2) - 15));
-
-            // 顧客満足度計算
-            const customerSatisfaction = Math.max(2.0, Math.min(5.0, 
-                2.0 + (brandPower * 0.03) + (operationalEfficiency * 0.02)));
-
-            // 総合スコア
-            const overallScore = Math.round((salesEfficiency + profitability + brandPower + 
-                operationalEfficiency + growthPotential + sustainability) / 6);
-
-            return {
-                salesEfficiency: Math.round(salesEfficiency),
-                profitability: Math.round(profitability),
-                brandPower: Math.round(brandPower),
-                operationalEfficiency: Math.round(operationalEfficiency),
-                growthPotential: Math.round(growthPotential),
-                sustainability: Math.round(sustainability),
-                monthlyRevenue,
-                operatingMargin: operatingMargin.toFixed(1),
-                customerSatisfaction: customerSatisfaction.toFixed(1),
-                overallScore
-            };
-        }
-
-        // UI更新関数
-        function updateUI() {
-            const metrics = calculateMetrics();
-
-            // KPI指標更新
-            document.getElementById('monthlyRevenue').textContent = 
-                `¥${metrics.monthlyRevenue.toLocaleString()}`;
-            document.getElementById('operatingMargin').textContent = `${metrics.operatingMargin}%`;
-            document.getElementById('customerSatisfaction').textContent = 
-                `${metrics.customerSatisfaction}/5.0`;
-            document.getElementById('overallScore').textContent = `${metrics.overallScore}/100`;
-
-            // 成長率とトレンド表示
-            const revenueGrowth = ((businessData.ltvMultiplier - 2) * 5 + 
-                (businessData.brandAwareness - 20) * 0.2).toFixed(1);
-            document.getElementById('revenueGrowth').textContent = `+${Math.max(0, revenueGrowth)}%`;
-
-            // 状態判定
-            document.getElementById('marginTrend').textContent = 
-                metrics.operatingMargin > 15 ? '健全' : '要改善';
-            document.getElementById('satisfactionTrend').textContent = 
-                metrics.customerSatisfaction > 4.0 ? '良好' : '改善余地';
-            document.getElementById('scoreLevel').textContent = 
-                metrics.overallScore > 70 ? '良好' : metrics.overallScore > 50 ? '標準' : '要改善';
-
-            // チャート更新
-            updateRadarChart(metrics);
-            updateCorrelationChart(metrics);
-            updateImprovementSuggestions(metrics);
-        }
-
-        // レーダーチャート更新
-        function updateRadarChart(metrics) {
-            if (strategyRadarChart) {
-                strategyRadarChart.data.datasets[0].data = [
-                    metrics.salesEfficiency,
-                    metrics.profitability,
-                    metrics.brandPower,
-                    metrics.operationalEfficiency,
-                    metrics.growthPotential,
-                    metrics.sustainability
-                ];
-                strategyRadarChart.update();
-            }
-        }
-
-        // 相関チャート更新
-        function updateCorrelationChart(metrics) {
-            if (correlationChart) {
-                correlationChart.data.datasets[0].data = [
-                    {x: metrics.brandPower, y: metrics.profitability, r: 10},
-                    {x: metrics.operationalEfficiency, y: metrics.salesEfficiency, r: 8},
-                    {x: metrics.growthPotential, y: metrics.sustainability, r: 12},
-                    {x: metrics.customerSatisfaction * 20, y: metrics.brandPower, r: 15},
-                    {x: metrics.salesEfficiency, y: metrics.profitability, r: 9}
-                ];
-                correlationChart.update();
-            }
-        }
-
-        // 改善提案更新
-        function updateImprovementSuggestions(metrics) {
-            const suggestions = [];
-            
-            if (metrics.brandPower < 60) {
-                suggestions.push({
-                    icon: 'fas fa-crown',
-                    title: 'ブランド力強化',
-                    description: '差別化度と顧客ロイヤリティの向上が急務。独自価値の明確化と顧客体験の改善を推奨。',
-                    priority: 'high'
+            // スライダーイベントリスナー
+            document.querySelectorAll('.slider').forEach(slider => {
+                slider.addEventListener('input', function() {
+                    updateAllValues();
+                    updateCharts();
                 });
-            }
-
-            if (metrics.profitability < 65) {
-                suggestions.push({
-                    icon: 'fas fa-coins',
-                    title: '収益性改善',
-                    description: '顧客獲得コストの最適化と売上総利益率の向上により、収益構造の強化が必要。',
-                    priority: 'high'
-                });
-            }
-
-            if (metrics.operationalEfficiency < 70) {
-                suggestions.push({
-                    icon: 'fas fa-cogs',
-                    title: '運営効率化',
-                    description: 'デジタル化推進と業務プロセスの見直しにより、生産性向上を図る。',
-                    priority: 'medium'
-                });
-            }
-
-            if (metrics.growthPotential < 50) {
-                suggestions.push({
-                    icon: 'fas fa-rocket',
-                    title: '成長戦略強化',
-                    description: '新市場開拓とイノベーション投資により、持続的成長基盤を構築。',
-                    priority: 'medium'
-                });
-            }
-
-            if (metrics.sustainability < 65) {
-                suggestions.push({
-                    icon: 'fas fa-shield-alt',
-                    title: '持続性向上',
-                    description: 'キャッシュフロー管理と財務基盤の強化により、事業継続性を確保。',
-                    priority: 'high'
-                });
-            }
-
-            const container = document.getElementById('improvementSuggestions');
-            container.innerHTML = suggestions.map(suggestion => `
-                <div class="bg-white bg-opacity-10 rounded-lg p-4 border-l-4 ${
-                    suggestion.priority === 'high' ? 'border-red-400' : 'border-yellow-400'
-                }">
-                    <div class="flex items-start space-x-3">
-                        <i class="${suggestion.icon} text-xl ${
-                            suggestion.priority === 'high' ? 'text-red-400' : 'text-yellow-400'
-                        }"></i>
-                        <div>
-                            <h4 class="font-semibold text-white mb-1">${suggestion.title}</h4>
-                            <p class="text-sm text-blue-100">${suggestion.description}</p>
-                            <span class="inline-block mt-2 px-2 py-1 text-xs rounded ${
-                                suggestion.priority === 'high' ? 'bg-red-500' : 'bg-yellow-500'
-                            } text-white">
-                                ${suggestion.priority === 'high' ? '高優先度' : '中優先度'}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // イベントリスナー設定
-        function setupEventListeners() {
-            // 全てのスライダーにイベントリスナーを設定
-            Object.keys(businessData).forEach(key => {
-                const slider = document.getElementById(key + 'Slider');
-                if (slider) {
-                    slider.addEventListener('input', function() {
-                        businessData[key] = parseFloat(this.value);
-                        document.getElementById(key).textContent = 
-                            key.includes('Multiplier') ? this.value : 
-                            key.includes('Value') || key.includes('cac') ? parseInt(this.value).toLocaleString() :
-                            this.value;
-                        updateUI();
-                    });
-                }
             });
+        });
+
+        function updateAllValues() {
+            const revenue = document.getElementById('monthlyRevenue').value;
+            const customers = document.getElementById('customerCount').value;
+            const acquisition = document.getElementById('acquisitionCost').value;
+            const lifetime = document.getElementById('customerLifetime').value;
+            const brand = document.getElementById('brandAwareness').value;
+            const satisfaction = document.getElementById('employeeSatisfaction').value;
+
+            document.getElementById('revenueValue').textContent = revenue + '万円';
+            document.getElementById('customerValue').textContent = customers + '人';
+            document.getElementById('acquisitionValue').textContent = (acquisition/1000).toFixed(0) + '千円';
+            document.getElementById('lifetimeValue').textContent = (lifetime/10000).toFixed(0) + '万円';
+            document.getElementById('brandValue').textContent = brand + '%';
+            document.getElementById('satisfactionValue').textContent = satisfaction + '%';
         }
 
-        // チャート初期化
+        function calculateResults() {
+            const revenue = parseInt(document.getElementById('monthlyRevenue').value);
+            const customers = parseInt(document.getElementById('customerCount').value);
+            const acquisition = parseInt(document.getElementById('acquisitionCost').value);
+            const lifetime = parseInt(document.getElementById('customerLifetime').value);
+            const brand = parseInt(document.getElementById('brandAwareness').value);
+            const satisfaction = parseInt(document.getElementById('employeeSatisfaction').value);
+
+            // 計算ロジック
+            const avgOrderValue = (revenue * 10000) / customers;
+            const salesEfficiency = Math.min(100, (avgOrderValue / 1000) * 10);
+            const investmentReturn = Math.min(100, (lifetime / acquisition) * 20);
+            const overallHealth = Math.round((salesEfficiency + investmentReturn + brand + satisfaction) / 4);
+
+            document.getElementById('salesEfficiency').textContent = salesEfficiency.toFixed(1) + '点';
+            document.getElementById('investmentReturn').textContent = investmentReturn.toFixed(1) + '点';
+            document.getElementById('overallHealth').textContent = overallHealth + '点';
+
+            document.getElementById('resultDisplay').style.display = 'block';
+        }
+
         function initializeCharts() {
             // レーダーチャート
-            const radarCtx = document.getElementById('strategyRadarChart').getContext('2d');
-            strategyRadarChart = new Chart(radarCtx, {
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            radarChart = new Chart(radarCtx, {
                 type: 'radar',
                 data: {
-                    labels: ['売上効率', '収益性', 'ブランド力', '運営効率', '成長性', '持続性'],
+                    labels: ['売上効率', '利益率', 'ブランド力', '業務効率', '成長力', '安定性'],
                     datasets: [{
-                        label: '現在のスコア',
-                        data: [65, 70, 55, 70, 40, 60],
-                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                        borderColor: 'rgba(59, 130, 246, 1)',
-                        borderWidth: 2,
-                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                        label: '現在の状況',
+                        data: [65, 70, 25, 65, 60, 55],
+                        fill: true,
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderColor: 'rgb(102, 126, 234)',
+                        pointBackgroundColor: 'rgb(102, 126, 234)',
                         pointBorderColor: '#fff',
                         pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgba(59, 130, 246, 1)'
+                        pointHoverBorderColor: 'rgb(102, 126, 234)'
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'white'
-                            }
+                    elements: {
+                        line: {
+                            borderWidth: 3
                         }
                     },
                     scales: {
@@ -600,110 +330,115 @@
                             beginAtZero: true,
                             max: 100,
                             ticks: {
-                                color: 'rgba(255, 255, 255, 0.8)',
                                 stepSize: 20
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.2)'
-                            },
-                            pointLabels: {
-                                color: 'white',
-                                font: {
-                                    size: 12
-                                }
                             }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
                         }
                     }
                 }
             });
 
-            // 相関チャート
-            const correlationCtx = document.getElementById('correlationChart').getContext('2d');
-            correlationChart = new Chart(correlationCtx, {
-                type: 'bubble',
+            // 棒グラフ
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            barChart = new Chart(barCtx, {
+                type: 'bar',
                 data: {
+                    labels: ['売上', '利益率', '顧客満足', 'ブランド', '効率性', '成長率'],
                     datasets: [{
-                        label: '戦略相関関係',
-                        data: [
-                            {x: 55, y: 70, r: 10},
-                            {x: 70, y: 65, r: 8},
-                            {x: 40, y: 60, r: 12},
-                            {x: 84, y: 55, r: 15},
-                            {x: 65, y: 70, r: 9}
-                        ],
+                        label: '現在値',
+                        data: [65, 70, 65, 25, 60, 55],
                         backgroundColor: [
-                            'rgba(239, 68, 68, 0.6)',
-                            'rgba(34, 197, 94, 0.6)',
-                            'rgba(59, 130, 246, 0.6)',
-                            'rgba(251, 191, 36, 0.6)',
-                            'rgba(168, 85, 247, 0.6)'
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 205, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 159, 64, 0.8)'
                         ],
                         borderColor: [
-                            'rgba(239, 68, 68, 1)',
-                            'rgba(34, 197, 94, 1)',
-                            'rgba(59, 130, 246, 1)',
-                            'rgba(251, 191, 36, 1)',
-                            'rgba(168, 85, 247, 1)'
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 205, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
                         ],
                         borderWidth: 2
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'white'
-                            }
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
                         }
                     },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: 'rgba(255, 255, 255, 0.8)'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.2)'
-                            },
-                            title: {
-                                display: true,
-                                text: '戦略要素A',
-                                color: 'white'
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                color: 'rgba(255, 255, 255, 0.8)'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.2)'
-                            },
-                            title: {
-                                display: true,
-                                text: '戦略要素B',
-                                color: 'white'
-                            }
+                    plugins: {
+                        legend: {
+                            display: false
                         }
                     }
                 }
             });
         }
 
-        // 初期化
-        document.addEventListener('DOMContentLoaded', function() {
-            setupEventListeners();
-            initializeCharts();
-            updateUI();
-        });
+        function updateCharts() {
+            const revenue = parseInt(document.getElementById('monthlyRevenue').value);
+            const customers = parseInt(document.getElementById('customerCount').value);
+            const acquisition = parseInt(document.getElementById('acquisitionCost').value);
+            const lifetime = parseInt(document.getElementById('customerLifetime').value);
+            const brand = parseInt(document.getElementById('brandAwareness').value);
+            const satisfaction = parseInt(document.getElementById('employeeSatisfaction').value);
+
+            // データ計算
+            const salesEfficiency = Math.min(100, revenue / 10);
+            const profitability = Math.min(100, (lifetime / acquisition) * 20);
+            const brandPower = brand;
+            const operationalEfficiency = satisfaction;
+            const growthPower = Math.min(100, (customers / 50) * 50);
+            const stability = Math.min(100, (revenue + satisfaction) / 2);
+
+            const newData = [salesEfficiency, profitability, brandPower, operationalEfficiency, growthPower, stability];
+
+            // チャート更新
+            radarChart.data.datasets[0].data = newData;
+            barChart.data.datasets[0].data = newData;
+
+            radarChart.update();
+            barChart.update();
+        }
+
+        function applyGrowthScenario() {
+            document.getElementById('monthlyRevenue').value = 200;
+            document.getElementById('customerCount').value = 150;
+            document.getElementById('acquisitionCost').value = 8000;
+            document.getElementById('brandAwareness').value = 45;
+            updateAllValues();
+            updateCharts();
+            alert('成長重視シナリオを適用しました！');
+        }
+
+        function applyOptimizationScenario() {
+            document.getElementById('monthlyRevenue').value = 120;
+            document.getElementById('customerCount').value = 80;
+            document.getElementById('acquisitionCost').value = 3000;
+            document.getElementById('employeeSatisfaction').value = 85;
+            updateAllValues();
+            updateCharts();
+            alert('効率最適化シナリオを適用しました！');
+        }
     </script>
 </body>
 </html>
     <script id="html_badge_script1">
         window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
-            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDpup3oHF3uu95Jr4sXiXk03EZTnbEDfkaahR%2FChFk3bVkHDpduekzbGJHwIK98nOhY%2BnKd73glPbmwwkLmtcbZi9aq7VDSNLx6u198PPa9Px8bUonp29NIofOeBLQV6G%2FZU6X0aCC0vvmppDBwWXLzM4z6VZd%2FR99qjrepNkzk%2B%2BmGQdkulAIQzr9sSCkw772GsMQrbiSHl8zcQiHU256qgBVJophKDfy2gjY3Ww1gKvEYl4y7VJYdPrHOOlntYP5fGhlQgnW1QVz8vSDvT%2FlB84ePvHMbQpWOvCMyfWQCx0xTCzR16G4SYOc5NUfjChY1g5M1L877WwIVqi7d5hXX71ZB%2BESjNx6E33Jun6t2n17wIugCPjyqWO0XmHQXDx5z60%2FmcOS3Q7qUVAr1ioqsu2MRFcYo2IqN1m5CqDHSJOAkFtmEH%2BiS%2BgL0AOUitOPbEKjLeitZkNadj5TXBEvCRtfsVUf4k7WGhWyJ87ztm0hCKbXJk%2BBxQX%2BKBflZGBg%2Fl2lfcMkRWDMS2s4SVZ3VxmZl4%2BFJkUOsACoGh3cuHV";
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDi0POKMm1TXujG%2F%2BMhOjGz5Ir3nLJ5ohJTrrV%2BBSUOl%2BvxrHa9kbMZU6ldV0hh2Fng1bqv7zxFugDZSNpRaEZ%2BZsErHIQUfwmVjPK7FUAeeGmAZ61i1sReW7MQbCjkuDVNouceTybrXCG%2F2ooAObFUMBaC1hqxAW83DXHtKM7FCiTDU5K4xUP%2F1cX8Ivq8hY8w2NI35pCC8ofzMKjIxXw9iRX5Q3dRivC2Mxhl1JiEXRsslyG95d18ZFO3ogBoxTInPAq30IJSpZXtYXYCoTJ7aGEbEjelacGHuZemHu7Vzi7r7lR3AZ89%2F9izUE4ARP7%2FH%2Bh3q%2FhKD6eYx2UZFJRLKzCCBTpCQM6ryZc1W3HDR%2F8pTAxXXZBdtV1ggJZdUjo87Effy5cQM50HQ9289C1F%2Fo59ZFR1NdiUS09x5gVw35lXxY7%2Fpl867qrxyoR4AVnHxh0qBwdF9vl3sNsCnI6FdcC23wuHOPxFfMp%2B7ESsVOhKw5jJ3gHCa8YTDvmkgWIzHMGm1V1WbVcNZwRbemQh%2FaanetCZ4sRWxeUKfeX2Ku";
         window.__genspark_locale = "ja-JP";
-        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDpup3oHF3uu95Jr4sXiXk03EZTnbEDfkaahR/ChFk3bVkHDpduekzbGJHwIK98nOhY+nKd73glPbmwwkLmtcbZi9aq7VDSNLx6u198PPa9Px8bUonp29NIofOeBLQV6G/ZU6X0aCC0vvmppDBwWXLzM4z6VZd/R99qjrepNkzk++mGQdkulAIQzr9sSCkw772GsMQrbiSHl8zcQiHU256qgBVJophKDfy2gjY3Ww1gKvEYl4y7VJYdPrHOOlntYP5fGhlQgnW1QVz8vSDvT/lB84ePvHMbQpWOvCMyfWQCx0xTCzR16G4SYOc5NUfjChY1g5M1L877WwIVqi7d5hXX71ZB+ESjNx6E33Jun6t2n17wIugCPjyqWO0XmHQXDx5z60/mcOS3Q7qUVAr1ioqsu2MRFcYo2IqN1m5CqDHSJOAkFtmEH+iS+gL0AOUitOPbEKjLeitZkNadj5TXBEvCRtfsVUf4k7WGhWyJ87ztm0hCKbXJk+BxQX+KBflZGBg/l2lfcMkRWDMS2s4SVZ3VxmZl4+FJkUOsACoGh3cuHV";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDi0POKMm1TXujG/+MhOjGz5Ir3nLJ5ohJTrrV+BSUOl+vxrHa9kbMZU6ldV0hh2Fng1bqv7zxFugDZSNpRaEZ+ZsErHIQUfwmVjPK7FUAeeGmAZ61i1sReW7MQbCjkuDVNouceTybrXCG/2ooAObFUMBaC1hqxAW83DXHtKM7FCiTDU5K4xUP/1cX8Ivq8hY8w2NI35pCC8ofzMKjIxXw9iRX5Q3dRivC2Mxhl1JiEXRsslyG95d18ZFO3ogBoxTInPAq30IJSpZXtYXYCoTJ7aGEbEjelacGHuZemHu7Vzi7r7lR3AZ89/9izUE4ARP7/H+h3q/hKD6eYx2UZFJRLKzCCBTpCQM6ryZc1W3HDR/8pTAxXXZBdtV1ggJZdUjo87Effy5cQM50HQ9289C1F/o59ZFR1NdiUS09x5gVw35lXxY7/pl867qrxyoR4AVnHxh0qBwdF9vl3sNsCnI6FdcC23wuHOPxFfMp+7ESsVOhKw5jJ3gHCa8YTDvmkgWIzHMGm1V1WbVcNZwRbemQh/aanetCZ4sRWxeUKfeX2Ku";
     </script>
     
     <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
